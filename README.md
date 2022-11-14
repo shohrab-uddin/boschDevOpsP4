@@ -1,4 +1,4 @@
-## Techtrends project 
+## Techtrends project
 
 Step 1: Creating the docker images and taging it: Docker for Application Packaging 
 ### Docker contents here 
@@ -37,8 +37,6 @@ docker push yourrepo/techtrends:v1.0.0
 
 docker tag local-image:tagname new-repo:tagname
 docker push new-repo:tagname
-
-
 
 Step 2: Github actions: Continuous Integration with Github Actions
         1. Create a new repo
