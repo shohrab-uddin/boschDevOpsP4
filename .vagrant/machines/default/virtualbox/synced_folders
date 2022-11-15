@@ -1,1 +1,1 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"C:/Users/HP/Desktop/Project4_techtrends","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"E:/D Drive/BOSCH AI/Lesson 4/boschDevOpsP4","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
