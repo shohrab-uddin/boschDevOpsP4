@@ -1,18 +1,21 @@
 import sqlite3
 import logging
-import sys 
+import sys
 import time
 from flask import Flask, jsonify, json, render_template, request, url_for, redirect, flash
 from werkzeug.exceptions import abort
 
 connection_count = 0
 
+
 def logger_message(message):
-    date = time.asctime() 
+    date = time.asctime()
     return f"{date}, {message}"
 
 # Function to get a database connection.
 # This function connects to database with the name `database.db`
+
+
 def get_db_connection():
     connection = sqlite3.connect('database.db')
     connection.row_factory = sqlite3.Row
@@ -25,23 +28,26 @@ def get_db_connection():
 def get_post(post_id):
     connection = get_db_connection()
     post = connection.execute('SELECT * FROM posts WHERE id = ?',
-                        (post_id,)).fetchone()
+                              (post_id,)).fetchone()
     connection.close()
     return post
+
 
 # Define the Flask application
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
 
+
 @app.route('/healthz')
 def healthz():
     response = app.response_class(
-            response=json.dumps({"result":"OK - healthy"}),
-            status=200,
-            mimetype='application/json'
+        response=json.dumps({"result": "OK - healthy"}),
+        status=200,
+        mimetype='application/json'
     )
     app.logger.debug(logger_message('Test debug message'))
     return response
+
 
 @app.route('/metrics')
 def metrics():
@@ -49,13 +55,15 @@ def metrics():
     posts = connection.execute('SELECT * FROM posts').fetchall()
     connection.close()
     response = app.response_class(
-            response=json.dumps({"db_connection_count": connection_count, "post_count": len(posts)}),
-            status=200,
-            mimetype='application/json'
+        response=json.dumps({"db_connection_count": connection_count, "post_count": len(posts)}),
+        status=200,
+        mimetype='application/json'
     )
     return response
 
-# Define the main route of the web application 
+# Define the main route of the web application
+
+
 @app.route('/')
 def index():
     connection = get_db_connection()
@@ -63,25 +71,32 @@ def index():
     connection.close()
     return render_template('index.html', posts=posts)
 
-# Define how each individual article is rendered 
+# Define how each individual article is rendered
 # If the post ID is not found a 404 page is shown
+
+
 @app.route('/<int:post_id>')
 def post(post_id):
     post = get_post(post_id)
     if post is None:
-      app.logger.debug(logger_message("Non existing post was retrieved."))
-      return render_template('404.html'), 404
+        app.logger.debug(logger_message("Non existing post was retrieved."))
+        return render_template('404.html'), 404
     else:
-      app.logger.debug(logger_message(f"Post \"{post['title']}\" was retrieved."))
-      return render_template('post.html', post=post)
+        app.logger.debug(logger_message(
+            f"Post \"{post['title']}\" was retrieved."))
+        return render_template('post.html', post=post)
 
 # Define the About Us page
+
+
 @app.route('/about')
 def about():
     app.logger.debug(logger_message("About page retrieved."))
     return render_template('about.html')
 
-# Define the post creation functionality 
+# Define the post creation functionality
+
+
 @app.route('/create', methods=('GET', 'POST'))
 def create():
     if request.method == 'POST':
@@ -92,8 +107,8 @@ def create():
             flash('Title is required!')
         else:
             connection = get_db_connection()
-            connection.execute('INSERT INTO posts (title, content) VALUES (?, ?)',
-                         (title, content))
+            connection.execute(
+                'INSERT INTO posts (title, content) VALUES (?, ?)', (title, content))
             connection.commit()
             connection.close()
             app.logger.debug(logger_message(f"Post \"{title}\" created."))
@@ -101,13 +116,14 @@ def create():
 
     return render_template('create.html')
 
+
 # start the application on port 3111
 if __name__ == "__main__":
-   logging.basicConfig(
-    level=logging.DEBUG,
-    handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.StreamHandler(sys.stderr)
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+            logging.StreamHandler(sys.stderr)
         ]
     )
-   app.run(host='0.0.0.0', port='3111')
+    app.run(host='0.0.0.0', port='3111')
