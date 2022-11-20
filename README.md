@@ -1,7 +1,7 @@
-## Techtrends project
+# Techtrends project
 
 Step 1: Creating the docker images and taging it: Docker for Application Packaging 
-### Docker contents here 
+
 
 ## Docker Login
 
